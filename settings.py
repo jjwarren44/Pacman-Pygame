@@ -1,5 +1,7 @@
 # Screen settings
-WIDTH, HEIGHT = 560, 620
+WIDTH, HEIGHT = 610, 670
+TOP_BOTTOM_BUFFER = 50 # leave room for high score and lives
+MAZE_WIDTH, MAZE_HEIGHT = WIDTH - TOP_BOTTOM_BUFFER, HEIGHT - TOP_BOTTOM_BUFFER
 FPS = 60
 
 # Color settings

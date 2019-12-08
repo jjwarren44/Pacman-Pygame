@@ -2,7 +2,6 @@ import pygame, sys
 from settings import * # custom settings file
 
 pygame.init()
-vec = pygame.math.Vector2
 
 class App:
 	def __init__(self):
@@ -10,8 +9,8 @@ class App:
 		self.clock = pygame.time.Clock()
 		self.running = True
 		self.state = 'start'
-		self.cell_width = WIDTH//28
-		self.cell_height = HEIGHT//30
+		self.cell_width = MAZE_WIDTH//28
+		self.cell_height = MAZE_HEIGHT//30
 
 		self.load()
 
@@ -43,14 +42,14 @@ class App:
 	# Load images on init
 	def load(self):
 		self.background = pygame.image.load('imgs/background.png')
-		self.background = pygame.transform.scale(self.background, (WIDTH, HEIGHT)) # Scale background to window size
+		self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT)) # Scale background to window size
 
 	# draw grid for movement
 	def draw_grid(self):
 		for x in range(WIDTH//self.cell_width):
-			pygame.draw.line(self.screen, GREY, (x*self.cell_width, 0), (x*self.cell_width, HEIGHT))
+			pygame.draw.line(self.background, GREY, (x*self.cell_width, 0), (x*self.cell_width, HEIGHT))
 		for x in range(HEIGHT//self.cell_height):
-			pygame.draw.line(self.screen, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
+			pygame.draw.line(self.background, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
 
 ######################## INTRO FUNCTIONS ##############################
 
@@ -81,6 +80,12 @@ class App:
 		pass
 
 	def playing_draw(self):
-		self.screen.blit(self.background, (0,0))
+		self.screen.fill(BLACK)
+		self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
 		self.draw_grid()
+		self.draw_text('CURRENT SCORE: 0', self.screen, [60, 2], START_TEXT_SIZE, WHITE, START_FONT)
+		self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH//2+60, 2], START_TEXT_SIZE, WHITE, START_FONT)
 		pygame.display.update()
+
+
+
