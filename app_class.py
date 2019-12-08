@@ -1,16 +1,19 @@
 import pygame, sys
 from settings import * # custom settings file
+from player_class import *
 
 pygame.init()
+vec = pygame.math.Vector2
 
 class App:
 	def __init__(self):
 		self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
 		self.clock = pygame.time.Clock()
 		self.running = True
-		self.state = 'start'
-		self.cell_width = MAZE_WIDTH//28
-		self.cell_height = MAZE_HEIGHT//30
+		self.state = 'start' # start at start screen
+		self.cell_width = MAZE_WIDTH//28 # init grid
+		self.cell_height = MAZE_HEIGHT//30 # init grid
+		self.player = Player(self, PLAYER_START_POS) #init player
 
 		self.load()
 
@@ -75,9 +78,20 @@ class App:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				self.running = False
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_LEFT:
+					self.player.move(vec(-1,0))
+				if event.key == pygame.K_RIGHT:
+					self.player.move(vec(1,0))
+				if event.key == pygame.K_UP:
+					self.player.move(vec(0,-1))
+				if event.key == pygame.K_DOWN:
+					self.player.move(vec(0,1))
+
+
 
 	def playing_update(self):
-		pass
+		self.player.update()
 
 	def playing_draw(self):
 		self.screen.fill(BLACK)
@@ -85,6 +99,7 @@ class App:
 		self.draw_grid()
 		self.draw_text('CURRENT SCORE: 0', self.screen, [60, 2], START_TEXT_SIZE, WHITE, START_FONT)
 		self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH//2+60, 2], START_TEXT_SIZE, WHITE, START_FONT)
+		self.player.draw() # draw player
 		pygame.display.update()
 
 
