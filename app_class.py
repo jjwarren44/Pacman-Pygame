@@ -2,6 +2,10 @@ import pygame, sys
 from settings import * # custom settings file
 from player_class import *
 from enemy_class import *
+from blinky import *
+from inky import *
+from pinky import *
+from clyde import *
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -15,6 +19,7 @@ class App:
 		self.cell_width = MAZE_WIDTH//28 # init grid
 		self.cell_height = MAZE_HEIGHT//30 # init grid
 		self.walls = []
+		self.map = [] # 2d array for ghosts to use to find path to pacman
 		self.coins = []
 		self.enemies = []
 		self.player_pos = None # player position
@@ -65,13 +70,25 @@ class App:
 						self.player_pos = (vec(xindex, yindex))
 					elif char in ['2','3','4','5']:
 						self.enemy_pos.append(vec(xindex, yindex))
-					elif char == 'B':
+					elif char == 'B': # black out so ghosts can walk out
 						pygame.draw.rect(self.background, BLACK, (xindex*self.cell_width, yindex*self.cell_height, self.cell_width, self.cell_height))
+
+				self.map.append([char for char in line]) # create 2d map for ghosts
 
 
 	def make_enemies(self):
+		# each enemy is their own object, inheriting from enemy_class
 		for index, position in enumerate(self.enemy_pos):
-			self.enemies.append(Enemy(self, position, index))
+			if index == 0:
+				self.enemies.append(Blinky(self, position, self.player))	
+			elif index == 1:
+				self.enemies.append(Pinky(self, position, self.player))
+			elif index == 2:
+				self.enemies.append(Inky(self, position, self.player))
+			else:
+				self.enemies.append(Clyde(self, position, self.player))
+
+			#self.enemies.append(Enemy(self, position, index))
 
 
 	'''

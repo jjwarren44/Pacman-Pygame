@@ -44,6 +44,9 @@ class Player:
 		return vec((self.grid_pos.x*self.app.cell_width)+TOP_BOTTOM_BUFFER//2+self.app.cell_width//2, 
 			(self.grid_pos.y*self.app.cell_height)+TOP_BOTTOM_BUFFER//2+self.app.cell_height//2) # so player moves by pixel, not grid (using 2d vector)
 
+	def get_grid_pos(self):
+		return vec(self.grid_pos.x, self.grid_pos.y)
+
 	# if pixel position is divisible (mod) by cell_width or cell_height, then we are within a cell. Allow movement
 	def time_to_move(self):
 		if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.app.cell_width == 0:
@@ -53,6 +56,9 @@ class Player:
 		if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.app.cell_height == 0:					
 			if self.direction == vec(0,1) or self.direction == vec(0,-1):
 				return True
+
+		# else
+		return False
 
 	# Function to handle whether or not there is a wall in the way
 	def can_move(self):

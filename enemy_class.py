@@ -3,24 +3,29 @@ from settings import *
 
 vec = pygame.math.Vector2
 
-class Enemy:
-	def __init__(self, app, pos, number):
+class Enemy(object):
+	def __init__(self, app, pos, player_obj, color):
 		self.app = app
 		self.grid_pos = pos
 		self.pix_pos = self.get_pix_pos()
-		self.radius = int(self.app.cell_width//2.3)
-		self.number = number
-		self.color = self.set_color()
 		self.direction = vec(0,0)
-		self.personality = self.set_personality()
+		self.stored_direction = None
+		self.color = color
+		self.speed = 1
+		self.able_to_move = True
+		self.player = player_obj
 
 	def update(self):
 		self.pix_pos += self.direction
-		if self.time_to_move:
+		if self.time_to_move():
 			self.move()
 
+		# Setting grid position in reference to pix position
+		self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+self.app.cell_width//2)//self.app.cell_width+1 # grid position x-axis
+		self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER+self.app.cell_height//2)//self.app.cell_height+1 # grid position x-axis
+
 	def draw(self):
-		pygame.draw.circle(self.app.screen, self.color, (int(self.pix_pos.x), int(self.pix_pos.y)), self.radius)
+		pygame.draw.circle(self.app.screen, self.color, (int(self.pix_pos.x), int(self.pix_pos.y)), self.app.cell_width//2-2)
 
 	def time_to_move(self):
 		if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.app.cell_width == 0:
@@ -34,29 +39,18 @@ class Enemy:
 		# else
 		return False
 
+	# Function to handle whether or not there is a wall in the way
+	def can_move(self):
+		for wall in self.app.walls:
+			if vec(self.grid_pos+self.direction) == wall: # if player hits wall, dont allow movement
+				return False
+		return True
+
 	def move(self):
-		pass
+		self.stored_direction = self.direction
 
 	def get_pix_pos(self):
 		return vec((self.grid_pos.x*self.app.cell_width)+TOP_BOTTOM_BUFFER//2+self.app.cell_width//2, 
 			(self.grid_pos.y*self.app.cell_height)+TOP_BOTTOM_BUFFER//2+self.app.cell_height//2) # so enemy moves by pixel, not grid (using 2d vector)
 
-	def set_color(self):
-		if self.number == 0:
-			return (43,78,203)
-		if self.number == 1:
-			return (197,200,27)
-		if self.number == 2:
-			return (189,29,29)
-		if self.number == 3:
-			return (215,159,33)
-
-	def set_personality(self):
-		if self.number == 0:
-			return "blinky"
-		elif self.number == 1:
-			return "pinky"		
-		elif self.number == 2:
-			return "inky"
-		else
-			return "clyde"			
+		
