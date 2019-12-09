@@ -1,6 +1,7 @@
 import pygame, sys
 from settings import * # custom settings file
 from player_class import *
+from enemy_class import *
 
 pygame.init()
 vec = pygame.math.Vector2
@@ -13,11 +14,15 @@ class App:
 		self.state = 'start' # start at start screen
 		self.cell_width = MAZE_WIDTH//28 # init grid
 		self.cell_height = MAZE_HEIGHT//30 # init grid
-		self.player = Player(self, PLAYER_START_POS) # init player
 		self.walls = []
 		self.coins = []
+		self.enemies = []
+		self.player_pos = None # player position
+		self.enemy_pos = [] # enemy position
 
-		self.load()
+		self.load() # load game
+		self.player = Player(self, self.player_pos) # init player
+		self.make_enemies()
 
 	def run(self):
 		while self.running:
@@ -47,7 +52,8 @@ class App:
 	# Load images and walls on init
 	def load(self):
 		self.background = pygame.image.load('imgs/background.png')
-		self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT)) # Scale background to window size
+		self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT)) # Scale background to correct size
+
 		with open('walls.txt', 'r') as file: # read in walls file and create walls list for wall coordinates
 			for yindex, line in enumerate(file): # enumerate to get coordinates
 				for xindex, char in enumerate(line):
@@ -55,6 +61,18 @@ class App:
 						self.walls.append(vec(xindex, yindex))
 					elif char == 'C': # if coin, set coordinate to coin
 						self.coins.append(vec(xindex, yindex))
+					elif char == 'P': # if player, set coordinate for player start
+						self.player_pos = (vec(xindex, yindex))
+					elif char in ['2','3','4','5']:
+						self.enemy_pos.append(vec(xindex, yindex))
+					elif char == 'B':
+						pygame.draw.rect(self.background, BLACK, (xindex*self.cell_width, yindex*self.cell_height, self.cell_width, self.cell_height))
+
+
+	def make_enemies(self):
+		for index, position in enumerate(self.enemy_pos):
+			self.enemies.append(Enemy(self, position, index))
+
 
 	'''
 	# draw grid for movement
@@ -104,7 +122,9 @@ class App:
 					self.player.move(vec(0,1))
 
 	def playing_update(self):
-		self.player.update()
+		self.player.update() # update player
+		for enemy in self.enemies: # update enemy
+			enemy.update()
 
 	def playing_draw(self):
 		self.screen.fill(BLACK)
@@ -114,6 +134,9 @@ class App:
 		self.draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [60, 2], START_TEXT_SIZE, WHITE, START_FONT)
 		self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH//2+60, 2], START_TEXT_SIZE, WHITE, START_FONT)
 		self.player.draw() # draw player
+		for enemy in self.enemies: # draw enemies
+			enemy.draw()
+
 		pygame.display.update()
 		# self.coins.pop()
 

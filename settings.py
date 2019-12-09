@@ -17,6 +17,5 @@ START_TEXT_SIZE = 28
 START_FONT = 'arial black'
 
 # Player settings
-PLAYER_START_POS = vec(1,1)
 
 # Mob settings
