@@ -62,7 +62,7 @@ class App:
 		with open('walls.txt', 'r') as file: # read in walls file and create walls list for wall coordinates
 			for yindex, line in enumerate(file): # enumerate to get coordinates
 				for xindex, char in enumerate(line):
-					if char == '1' or char == 'B': # if wall,  set coordinate to boundary
+					if char == '1': # if wall,  set coordinate to boundary
 						self.walls.append(vec(xindex, yindex))
 					elif char == 'C': # if coin, set coordinate to coin
 						self.coins.append(vec(xindex, yindex))
@@ -70,7 +70,7 @@ class App:
 						self.player_pos = (vec(xindex, yindex))
 					elif char in ['2','3','4','5']:
 						self.enemy_pos.append(vec(xindex, yindex))
-					elif char == 'B': # black out so ghosts can walk out
+					elif char == 'G': # gate for ghost house
 						pygame.draw.rect(self.background, BLACK, (xindex*self.cell_width, yindex*self.cell_height, self.cell_width, self.cell_height))
 
 				self.map.append([char for char in line]) # create 2d map for ghosts
