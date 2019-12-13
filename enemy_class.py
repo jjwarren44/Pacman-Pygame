@@ -10,8 +10,9 @@ class Enemy(object):
 		self.pix_pos = self.get_pix_pos()
 		self.direction = vec(0,0)
 		self.color = color
-		self.speed = 2
+		self.speed = 1
 		self.player = player_obj
+		self.in_ghost_house = True
 
 	def draw(self):
 		pygame.draw.circle(self.app.screen, self.color, (int(self.pix_pos.x), int(self.pix_pos.y)), self.app.cell_width//2-2)
@@ -31,5 +32,6 @@ class Enemy(object):
 	def get_pix_pos(self):
 		return vec((self.grid_pos.x*self.app.cell_width)+TOP_BOTTOM_BUFFER//2+self.app.cell_width//2, 
 			(self.grid_pos.y*self.app.cell_height)+TOP_BOTTOM_BUFFER//2+self.app.cell_height//2) # so enemy moves by pixel, not grid (using 2d vector)
+
 
 		
