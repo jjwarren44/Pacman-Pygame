@@ -62,7 +62,7 @@ class App:
 		with open('walls.txt', 'r') as file: # read in walls file and create walls list for wall coordinates
 			for yindex, line in enumerate(file): # enumerate to get coordinates
 				for xindex, char in enumerate(line):
-					if char == '1': # if wall,  set coordinate to boundary
+					if char == '1' or char == 'B': # if wall,  set coordinate to boundary
 						self.walls.append(vec(xindex, yindex))
 					elif char == 'C': # if coin, set coordinate to coin
 						self.coins.append(vec(xindex, yindex))

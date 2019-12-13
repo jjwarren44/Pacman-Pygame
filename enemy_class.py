@@ -11,7 +11,7 @@ class Enemy(object):
 		self.direction = vec(0,0)
 		self.stored_direction = None
 		self.color = color
-		self.speed = 1
+		self.speed = 2
 		self.able_to_move = True
 		self.player = player_obj
 
@@ -20,9 +20,9 @@ class Enemy(object):
 		if self.time_to_move():
 			self.move()
 
-		# Setting grid position in reference to pix position
+		'''Setting grid position in reference to pix position
 		self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+self.app.cell_width//2)//self.app.cell_width+1 # grid position x-axis
-		self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER+self.app.cell_height//2)//self.app.cell_height+1 # grid position x-axis
+		self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER+self.app.cell_height//2)//self.app.cell_height+1 # grid position x-axis'''
 
 	def draw(self):
 		pygame.draw.circle(self.app.screen, self.color, (int(self.pix_pos.x), int(self.pix_pos.y)), self.app.cell_width//2-2)
@@ -47,7 +47,7 @@ class Enemy(object):
 		return True
 
 	def move(self):
-		self.stored_direction = self.direction
+		pass
 
 	def get_pix_pos(self):
 		return vec((self.grid_pos.x*self.app.cell_width)+TOP_BOTTOM_BUFFER//2+self.app.cell_width//2, 

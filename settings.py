@@ -19,3 +19,9 @@ START_FONT = 'arial black'
 # Player settings
 
 # Mob settings
+
+# Movement directions
+RIGHT = vec(1,0)
+LEFT = vec(-1,0)
+UP = vec(0,1)
+DOWN = vec(0,-1)
