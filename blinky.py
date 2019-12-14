@@ -11,7 +11,8 @@ vec = pygame.math.Vector2
 class Blinky(Enemy):
 	def __init__(self, app, pos, player_obj):
 		self.color = 0xff0000
-		super(Blinky, self).__init__(app, pos, player_obj, self.color)
+		self.img = pygame.image.load("imgs/blinky.png")
+		super(Blinky, self).__init__(app, pos, player_obj, self.img)
 		self.possible_directions = [[1,0],[-1,0],[0,1],[0,-1]] #right, left, down, up
 		self.direction = vec(1,0)
 		self.in_ghost_house = False

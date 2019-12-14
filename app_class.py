@@ -24,6 +24,7 @@ class App:
 		self.enemies = []
 		self.player_pos = None # player position
 		self.enemy_pos = [] # enemy position
+		self.game_start_time = 0 # keep track of when player starts the game
 
 		self.load() # load game
 		self.player = Player(self, self.player_pos) # init player
@@ -38,8 +39,14 @@ class App:
 			elif self.state == 'playing':
 				self.playing_events()
 				self.playing_update()
-				self.playing_draw()				
+				self.playing_draw()
+			elif self.state == 'player_won':
+				self.player_won()
+			elif self.state == 'player_lost':
+				self.player_lost()
+
 			self.clock.tick(FPS) # 60, FPS in settings file
+
 		pygame.quit()
 		sys.exit()
 
@@ -89,20 +96,6 @@ class App:
 			else:
 				self.enemies.append(Clyde(self, position, self.player))
 
-			#self.enemies.append(Enemy(self, position, index))
-
-
-	'''
-	# draw grid for movement
-	def draw_grid(self):
-		for x in range(WIDTH//self.cell_width):
-			pygame.draw.line(self.background, GREY, (x*self.cell_width, 0), (x*self.cell_width, HEIGHT))
-		for x in range(HEIGHT//self.cell_height):
-			pygame.draw.line(self.background, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
-		for coin in self.coins: # draw coins
-			pygame.draw.rect(self.background, (167,179,34), 
-				(coin.x*self.cell_width, coin.y*self.cell_height, self.cell_width, self.cell_height))
-	'''
 
 ######################## INTRO FUNCTIONS ##############################
 
@@ -112,6 +105,7 @@ class App:
 				self.running = False
 			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
 				self.state = 'playing'
+				self.game_start_time = pygame.time.get_ticks()
 
 	def start_update(self):
 		pass
@@ -119,7 +113,6 @@ class App:
 	def start_draw(self):
 		self.draw_text('PUSH SPACE BAR', self.screen, [WIDTH//2, HEIGHT//2 - 50], START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True) # PUSH SPACE BAR text
 		self.draw_text('1 PLAYER ONLY', self.screen, [WIDTH//2, HEIGHT//2 + 50], START_TEXT_SIZE, (44, 167, 198), START_FONT, centered=True) # 1 PLAYER ONLY text
-		self.draw_text('HIGH SCORE', self.screen, [4,0], START_TEXT_SIZE, WHITE, START_FONT) # HIGH SCORE text
 		pygame.display.update()
 
 
@@ -143,26 +136,54 @@ class App:
 		self.player.update() # update player
 		for enemy in self.enemies: # update enemy
 			enemy.update()
+		if len(self.coins) == 0:
+			self.state = 'player_won'
 
 	def playing_draw(self):
 		self.screen.fill(BLACK)
 		self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
 		self.draw_coins()
-		# self.draw_grid()
 		self.draw_text('CURRENT SCORE: {}'.format(self.player.current_score), self.screen, [60, 2], START_TEXT_SIZE, WHITE, START_FONT)
-		self.draw_text('HIGH SCORE: 0', self.screen, [WIDTH//2+60, 2], START_TEXT_SIZE, WHITE, START_FONT)
 		self.player.draw() # draw player
 		for enemy in self.enemies: # draw enemies
 			enemy.draw()
 
 		pygame.display.update()
-		# self.coins.pop()
 
 	def draw_coins(self):
 		for coin in self.coins:
 			pygame.draw.circle(self.screen, (124,123,7), 
 				((int(coin.x*self.cell_width)+self.cell_width//2)+TOP_BOTTOM_BUFFER//2, 
 					(int(coin.y*self.cell_height)+self.cell_height//2)+TOP_BOTTOM_BUFFER//2), 3)
+
+######################## PLAYER WON ##############################
+
+	def player_won(self):
+		self.draw_text('YOU WON!', self.screen, [WIDTH//2, HEIGHT//2 - 100], 36, (170, 132, 58), START_FONT, centered=True) # PUSH SPACE BAR text
+		self.draw_text('PUSH SPACE BAR TO PLAY AGAIN', self.screen, [WIDTH//2, HEIGHT//2 + 100], 28, (44, 167, 198), START_FONT, centered=True) # PUSH SPACE BAR text
+		pygame.display.update()
+
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				self.running = False
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+				self.screen.fill(pygame.Color("black"))
+				self.__init__()
+
+######################## PLAYER LOST ##############################
+
+	def player_lost(self):
+		self.draw_text('YOU LOST :(', self.screen, [WIDTH//2, HEIGHT//2 - 100], 36, (170, 132, 58), START_FONT, centered=True) # PUSH SPACE BAR text
+		self.draw_text('PUSH SPACE BAR TO PLAY AGAIN', self.screen, [WIDTH//2, HEIGHT//2 + 100], 28, (44, 167, 198), START_FONT, centered=True) # PUSH SPACE BAR text
+		pygame.display.update()
+
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				self.running = False
+			if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+				self.screen.fill(pygame.Color("black"))
+				self.__init__()
+
 
 
 

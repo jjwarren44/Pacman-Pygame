@@ -11,25 +11,30 @@ vec = pygame.math.Vector2
 class Inky(Enemy):
 	def __init__(self, app, pos, player_obj, blinky_obj):
 		self.color = 0x00ffff
-		super(Inky, self).__init__(app, pos, player_obj, self.color)
+		self.img = pygame.image.load("imgs/inky.png")
+		super(Inky, self).__init__(app, pos, player_obj, self.img)
 		self.possible_directions = [[1,0],[-1,0],[0,1],[0,-1]] #right, left, down, up
 		self.blinky = blinky_obj
-		self.direction = vec(1,0)
+		self.direction = vec(0,0)
 
 	# Get position of 2 tiles in front of pacman, draw a line from blinky to this tile, and double the length of this line. This points to inky's target tile. 
 	def update(self):
-		self.pix_pos += self.direction*self.speed # move
+		if pygame.time.get_ticks() - self.app.game_start_time > 6000:
 
-		if self.in_ghost_house: # manually move left 2 and up 2
-			if self.grid_pos.x == 14 and self.grid_pos.y == 15:
-				self.direction = vec(0,-1)
-			if self.grid_pos.x == 14 and self.grid_pos.y == 11:
-				self.in_ghost_house = False
-		else:
-			if self.time_to_move():
-				find = self.find_next_tile(self.player.grid_pos, self.player.direction, self.blinky.grid_pos)
-				if find != None:
-					self.direction = vec(find[0],find[1])
+			self.pix_pos += self.direction*self.speed # move
+
+			if self.in_ghost_house: # manually move left 2 and up 2
+				if self.grid_pos.x == 11 and self.grid_pos.y == 15:
+					self.direction = vec(1,0)
+				if self.grid_pos.x == 14 and self.grid_pos.y == 15:
+					self.direction = vec(0,-1)
+				if self.grid_pos.x == 14 and self.grid_pos.y == 11:
+					self.in_ghost_house = False
+			else:
+				if self.time_to_move():
+					find = self.find_next_tile(self.player.grid_pos, self.player.direction, self.blinky.grid_pos)
+					if find != None:
+						self.direction = vec(find[0],find[1])
 
 		# Setting grid position in reference to pix position
 		self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+self.app.cell_width//2)//self.app.cell_width+1 # grid position x-axis
