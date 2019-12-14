@@ -19,7 +19,6 @@ class Pinky(Enemy):
 	def update(self):
 		self.pix_pos += self.direction*self.speed # move
 
-		print(self.grid_pos.x, self.grid_pos.y)
 		if self.in_ghost_house: # manually move left 2 and up 2
 			if self.grid_pos.x == 14 and self.grid_pos.y == 13:
 				self.direction = vec(0,-1)

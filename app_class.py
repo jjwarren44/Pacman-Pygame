@@ -80,11 +80,12 @@ class App:
 		# each enemy is their own object, inheriting from enemy_class
 		for index, position in enumerate(self.enemy_pos):
 			if index == 0:
-				self.enemies.append(Blinky(self, position, self.player))	
+				blinky_obj = Blinky(self, position, self.player)
+				self.enemies.append(blinky_obj)	
 			elif index == 1:
 				self.enemies.append(Pinky(self, position, self.player))
 			elif index == 2:
-				self.enemies.append(Inky(self, position, self.player))
+				self.enemies.append(Inky(self, position, self.player, blinky_obj))
 			else:
 				self.enemies.append(Clyde(self, position, self.player))
 
