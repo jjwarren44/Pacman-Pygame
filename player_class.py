@@ -23,7 +23,7 @@ class Player:
 
 		# Keep player on the grid, can't be on a line but has to be within the lines
 		if self.time_to_move():
-			if self.stored_direction != None:
+			if self.stored_direction != None and vec(self.grid_pos + self.stored_direction) not in self.app.walls:
 				self.direction = self.stored_direction
 			self.able_to_move = self.can_move()
 
@@ -62,9 +62,9 @@ class Player:
 
 	# Function to handle whether or not there is a wall in the way
 	def can_move(self):
-		for wall in self.app.walls:
-			if vec(self.grid_pos+self.direction) == wall: # if player hits wall, dont allow movement
-				return False
+		if vec(self.grid_pos + self.direction) in self.app.walls:
+			return False
+			
 		return True
 
 	# Function to check if player is on coin
